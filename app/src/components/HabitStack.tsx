@@ -32,11 +32,19 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
     }
   };
 
+  // 스택 반복 주기 텍스트 생성
+  const stackRepetitionText = stack.repetitionType === 'custom' && stack.customDays
+    ? `${stack.customDays}일마다 반복`
+    : stack.repetitionType === 'daily'
+      ? '매일 반복'
+      : '매주 반복';
+
   return (
     <div className="col-md-6 col-lg-4 mb-4">
       <div className="card">
         <div className="card-header">
           <h5 className="card-title">{stack.name}</h5>
+          <small className="text-muted">{stackRepetitionText}</small> {/* 스택 반복 주기 표시 */}
         </div>
         <div className="card-body">
           <div className="habit-stack-visual mb-3">
