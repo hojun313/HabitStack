@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { HabitStackData, Habit } from './types';
 import HabitStack from './components/HabitStack';
 import AddHabitStackForm from './components/AddHabitStackForm';
@@ -29,30 +29,41 @@ const initialStacks: HabitStackData[] = [
 // App 컴포넌트
 function App() {
   const [stacks, setStacks] = useState<HabitStackData[]>(initialStacks);
+  // nextIdRef를 사용하여 고유 ID를 생성합니다.
+  // 초기 ID는 initialStacks의 최대 ID보다 크게 설정합니다.
+  const nextIdRef = useRef(
+    Math.max(
+      ...initialStacks.flatMap(stack => [
+        stack.id,
+        ...stack.habits.map(habit => habit.id),
+      ]),
+    ) + 1
+  );
 
   // 가장 아래 할 일 완료 처리
   const handleComplete = (stackId: number) => {
-    setStacks(prevStacks => {
-      const newStacks = [...prevStacks];
-      const stackIndex = newStacks.findIndex(s => s.id === stackId);
-      if (stackIndex === -1) return prevStacks;
+    setStacks(prevStacks =>
+      prevStacks.map(stack => {
+        if (stack.id === stackId) {
+          if (stack.habits.length === 0) return stack; // 습관이 없으면 변경 없음
 
-      const stackToUpdate = { ...newStacks[stackIndex] };
-      if (stackToUpdate.habits.length === 0) return prevStacks;
-
-      // 가장 아래의 할 일을 꺼내서 맨 위로 올림
-      const completedHabit = stackToUpdate.habits.pop()!;
-      stackToUpdate.habits.unshift(completedHabit);
-
-      newStacks[stackIndex] = stackToUpdate;
-      return newStacks;
-    });
+          const completedHabit = stack.habits[stack.habits.length - 1];
+          // 새로운 habits 배열 생성: 마지막 습관을 맨 앞으로 이동
+          const updatedHabits = [
+            completedHabit,
+            ...stack.habits.slice(0, stack.habits.length - 1),
+          ];
+          return { ...stack, habits: updatedHabits };
+        }
+        return stack;
+      })
+    );
   };
 
   // 새 스택 추가 처리
   const handleAddStack = (stackName: string) => {
     const newStack: HabitStackData = {
-      id: Date.now() + Math.random(), // 고유 ID 생성
+      id: nextIdRef.current++, // 고유 ID 생성 및 증가
       name: stackName,
       habits: [], // 초기엔 비어있는 습관 목록
     };
@@ -61,22 +72,20 @@ function App() {
 
   // 습관 추가 처리
   const handleAddHabit = (stackId: number, habitName: string) => {
-    setStacks(prevStacks => {
-      const newStacks = [...prevStacks];
-      const stackIndex = newStacks.findIndex(s => s.id === stackId);
-      if (stackIndex === -1) return prevStacks;
-
-      const stackToUpdate = { ...newStacks[stackIndex] };
-      const newHabit: Habit = {
-        id: Date.now() + Math.random(), // 고유 ID 생성
-        name: habitName,
-        isSpecial: false, // 기본값은 false
-      };
-      stackToUpdate.habits.push(newHabit);
-
-      newStacks[stackIndex] = stackToUpdate;
-      return newStacks;
-    });
+    setStacks(prevStacks =>
+      prevStacks.map(stack => {
+        if (stack.id === stackId) {
+          const newHabit: Habit = {
+            id: nextIdRef.current++, // 고유 ID 생성 및 증가
+            name: habitName,
+            isSpecial: false, // 기본값은 false
+          };
+          // 새로운 habits 배열 생성: 기존 습관에 새 습관 추가
+          return { ...stack, habits: [...stack.habits, newHabit] };
+        }
+        return stack;
+      })
+    );
   };
 
 

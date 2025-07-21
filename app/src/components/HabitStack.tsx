@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'; // useRef 추가
+import { useState, useRef } from 'react';
 import type { HabitStackData } from '../types';
 import HabitBlock from './HabitBlock';
 
@@ -13,16 +13,22 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
   const [newHabitName, setNewHabitName] = useState('');
   const bottomHabit = stack.habits[stack.habits.length - 1];
   const isAddingRef = useRef(false); // 추가 중인지 추적하는 ref
+  const isCompletingRef = useRef(false); // 완료 처리 중인지 추적하는 ref
 
   const handleAddHabit = () => {
-    if (newHabitName.trim() && !isAddingRef.current) { // 입력값이 있고, 추가 중이 아닐 때만 실행
-      isAddingRef.current = true; // 추가 시작 플래그 설정
+    if (newHabitName.trim() && !isAddingRef.current) {
+      isAddingRef.current = true;
       onAddHabit(stack.id, newHabitName);
       setNewHabitName('');
-      // 짧은 지연 후 플래그 초기화하여 빠른 연속 클릭 방지
-      setTimeout(() => {
-        isAddingRef.current = false;
-      }, 300); // 300ms 딜레이 (필요에 따라 조정 가능)
+      isAddingRef.current = false; // 즉시 플래그 재설정
+    }
+  };
+
+  const handleCompleteClick = () => {
+    if (!isCompletingRef.current) {
+      isCompletingRef.current = true;
+      onComplete(stack.id);
+      isCompletingRef.current = false; // 즉시 플래그 재설정
     }
   };
 
@@ -51,7 +57,7 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
               onChange={(e) => setNewHabitName(e.target.value)}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  e.preventDefault(); // 기본 동작 방지
+                  e.preventDefault();
                   handleAddHabit();
                 }
               }}
@@ -60,15 +66,15 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
               className="btn btn-outline-secondary"
               type="button"
               onClick={handleAddHabit}
-              disabled={isAddingRef.current} // 추가 중일 때 버튼 비활성화
+              disabled={isAddingRef.current}
             >
               추가
             </button>
           </div>
           <button
             className="btn btn-primary w-100"
-            onClick={() => onComplete(stack.id)}
-            disabled={!bottomHabit}
+            onClick={handleCompleteClick}
+            disabled={!bottomHabit || isCompletingRef.current}
           >
             {bottomHabit ? `"${bottomHabit.name}" 완료` : '스택이 비었습니다'}
           </button>
