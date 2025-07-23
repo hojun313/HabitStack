@@ -13,8 +13,10 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
   const [newHabitName, setNewHabitName] = useState('');
   const [completingHabitId, setCompletingHabitId] = useState<number | null>(null);
   const [newlyAddedHabitId, setNewlyAddedHabitId] = useState<number | null>(null);
+  const [droppingBlocks, setDroppingBlocks] = useState<Set<number>>(new Set());
   const [reappearingHabitId, setReappearingHabitId] = useState<number | null>(null);
-  const bottomHabit = stack.habits[stack.habits.length - 1];
+  // flex-direction: column-reverse 때문에 첫 번째 요소가 시각적으로 아래에 위치
+  const bottomHabit = stack.habits[0];
   const isAddingRef = useRef(false); // 추가 중인지 추적하는 ref
   const isCompletingRef = useRef(false); // 완료 처리 중인지 추적하는 ref
 
@@ -46,22 +48,27 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
     
     // 완료 애니메이션 완료 후 실제 상태 변경
     setTimeout(() => {
-      // 상태 변경 직전에 완료 애니메이션 정리
+      // 완료 애니메이션 정리
       setCompletingHabitId(null);
       
-      // 실제 상태 변경
+      // 남은 블록들을 떨어뜨리기 위해 ID 수집
+      const remainingBlocks = stack.habits.slice(1).map(h => h.id);
+      setDroppingBlocks(new Set(remainingBlocks));
+      
+      // 실제 상태 변경 - 첫 번째 블록을 맨 뒤로 이동
       onComplete(stack.id);
       
       // 상태 변경 후 약간의 지연을 두고 재등장 애니메이션 시작
       setTimeout(() => {
         setReappearingHabitId(completingId);
+        setDroppingBlocks(new Set()); // 드롭 애니메이션 정리
         
         // 재등장 애니메이션 완료 후 상태 초기화
         setTimeout(() => {
           setReappearingHabitId(null);
           isCompletingRef.current = false;
         }, 800);
-      }, 100); // 상태 변경 후 짧은 지연
+      }, 400); // 상태 변경과 드롭 애니메이션 후 지연
     }, 1200); // 완료 애니메이션 시간
   };
 
@@ -92,10 +99,11 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
                 <HabitBlock
                   key={habit.id}
                   habit={habit}
-                  isBottom={index === stack.habits.length - 1}
+                  isBottom={index === 0}
                   isCompleting={completingHabitId === habit.id}
                   isNew={newlyAddedHabitId === habit.id}
-                  isReappearing={reappearingHabitId === habit.id}
+                  isReappearing={reappearingHabitId === habit.id && index === stack.habits.length - 1}
+                  isDropping={droppingBlocks.has(habit.id)}
                 />
               ))
             )}

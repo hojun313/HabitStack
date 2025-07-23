@@ -44,19 +44,16 @@ function App() {
     ) + 1
   );
 
-  // 가장 아래 할 일 완료 처리
+  // 가장 아래 할 일 완료 처리 (완료된 블록이 맨 위로 이동)
   const handleComplete = (stackId: number) => {
     setStacks(prevStacks =>
       prevStacks.map(stack => {
         if (stack.id === stackId) {
           if (stack.habits.length === 0) return stack; // 습관이 없으면 변경 없음
 
-          const completedHabit = stack.habits[stack.habits.length - 1];
-          // 새로운 habits 배열 생성: 마지막 습관을 맨 앞으로 이동
-          const updatedHabits = [
-            completedHabit,
-            ...stack.habits.slice(0, stack.habits.length - 1),
-          ];
+          // 첫 번째(아래) 블록을 가져와서 맨 뒤(위)로 이동
+          const completedHabit = stack.habits[0];
+          const updatedHabits = [...stack.habits.slice(1), completedHabit];
           return { ...stack, habits: updatedHabits };
         }
         return stack;

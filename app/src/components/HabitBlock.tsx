@@ -7,6 +7,7 @@ interface HabitBlockProps {
   isCompleting?: boolean;
   isNew?: boolean;
   isReappearing?: boolean;
+  isDropping?: boolean;
 }
 
 // HabitBlock 컴포넌트
@@ -15,14 +16,22 @@ const HabitBlock = ({
   isBottom, 
   isCompleting = false, 
   isNew = false,
-  isReappearing = false 
+  isReappearing = false,
+  isDropping = false
 }: HabitBlockProps) => {
   const [animationClass, setAnimationClass] = useState('');
 
   useEffect(() => {
-    // 애니메이션 우선순위: completing > reappearing > new
+    // 애니메이션 우선순위: completing > dropping > reappearing > new
     if (isCompleting) {
       setAnimationClass('completing');
+    } else if (isDropping) {
+      setAnimationClass('dropping');
+      // 드롭 애니메이션 완료 후 클래스 제거
+      const timer = setTimeout(() => {
+        setAnimationClass('');
+      }, 800);
+      return () => clearTimeout(timer);
     } else if (isReappearing) {
       setAnimationClass('reappearing');
       // 재등장 애니메이션 완료 후 클래스 제거
@@ -41,7 +50,7 @@ const HabitBlock = ({
       // 모든 애니메이션이 false일 때만 클래스 제거
       setAnimationClass('');
     }
-  }, [isCompleting, isReappearing, isNew]);
+  }, [isCompleting, isDropping, isReappearing, isNew]);
 
   const blockClasses = [
     'habit-block',
