@@ -28,8 +28,8 @@ const AddHabitStackForm = ({ onAddStack }: AddHabitStackFormProps) => {
           value={newStackName}
           onChange={(e) => setNewStackName(e.target.value)}
         />
-        <button type="submit" className="btn btn-success" disabled={isSubmittingRef.current}>
-          새 스택 추가
+        <button type="submit" className="btn btn-primary" disabled={isSubmittingRef.current}>
+          🚀 새 스택 추가
         </button>
       </div>
     </form>

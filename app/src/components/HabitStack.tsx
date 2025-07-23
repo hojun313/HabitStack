@@ -71,7 +71,7 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
               }}
             />
             <button
-              className="btn btn-outline-secondary"
+              className="btn btn-outline-primary"
               type="button"
               onClick={handleAddHabit}
               disabled={isAddingRef.current}
@@ -80,11 +80,11 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
             </button>
           </div>
           <button
-            className="btn btn-primary w-100"
+            className="complete-btn"
             onClick={handleCompleteClick}
             disabled={!bottomHabit || isCompletingRef.current}
           >
-            {bottomHabit ? `"${bottomHabit.name}" 완료` : '스택이 비었습니다'}
+            {bottomHabit ? `✨ "${bottomHabit.name}" 완료하기` : '📚 스택이 비었습니다'}
           </button>
         </div>
       </div>

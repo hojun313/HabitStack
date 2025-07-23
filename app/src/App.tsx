@@ -70,6 +70,7 @@ function App() {
       id: nextIdRef.current++, // 고유 ID 생성 및 증가
       name: stackName,
       habits: [], // 초기엔 비어있는 습관 목록
+      repetitionType: 'weekly', // 기본값을 weekly로 설정
     };
     setStacks(prevStacks => [...prevStacks, newStack]);
   };
