@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { HabitStackData, Habit } from './types';
 import HabitStack from './components/HabitStack';
 import AddHabitStackForm from './components/AddHabitStackForm';
 
-// 초기 데이터
-const initialStacks: HabitStackData[] = [
+// 초기 데이터 (localStorage가 비어있을 때만 사용)
+const defaultStacks: HabitStackData[] = [
   {
     id: 1,
     name: '아침 루틴',
@@ -29,14 +29,44 @@ const initialStacks: HabitStackData[] = [
   },
 ];
 
+// localStorage에서 데이터 로드
+const loadStacksFromStorage = (): HabitStackData[] => {
+  try {
+    const stored = localStorage.getItem('habitStacks');
+    return stored ? JSON.parse(stored) : defaultStacks;
+  } catch (error) {
+    console.error('데이터 로드 오류:', error);
+    return defaultStacks;
+  }
+};
+
+// localStorage에 데이터 저장
+const saveStacksToStorage = (stacks: HabitStackData[]) => {
+  try {
+    localStorage.setItem('habitStacks', JSON.stringify(stacks));
+  } catch (error) {
+    console.error('데이터 저장 오류:', error);
+  }
+};
+
 
 // App 컴포넌트
 function App() {
-  const [stacks, setStacks] = useState<HabitStackData[]>(initialStacks);
+  const [stacks, setStacks] = useState<HabitStackData[]>(() => loadStacksFromStorage());
+  
   // nextIdRef를 사용하여 스택의 고유 ID를 생성합니다.
-  const nextIdRef = useRef(
-    Math.max(...initialStacks.map(stack => stack.id)) + 1
-  );
+  const getNextId = () => {
+    const loadedStacks = loadStacksFromStorage();
+    return loadedStacks.length > 0 
+      ? Math.max(...loadedStacks.map((stack: HabitStackData) => stack.id)) + 1 
+      : 1;
+  };
+  const nextIdRef = useRef<number>(getNextId());
+
+  // 데이터가 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    saveStacksToStorage(stacks);
+  }, [stacks]);
 
   // 가장 아래 할 일 완료 처리 (완료된 블록이 맨 위로 이동)
   const handleComplete = (stackId: number) => {
