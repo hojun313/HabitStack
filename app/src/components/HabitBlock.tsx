@@ -52,10 +52,18 @@ const HabitBlock = ({
     }
   }, [isCompleting, isDropping, isReappearing, isNew]);
 
+  // ID를 기반으로 색상 클래스 생성 (ID 1부터 빨간색 시작)
+  const getColorClass = (id: number) => {
+    if (id === 0) return 'color-0'; // 특별 블록용 (사실상 사용되지 않음)
+    const colorIndex = (id - 1) % 7; // ID 1부터 빨간색(index 0) 시작
+    return `color-${colorIndex}`;
+  };
+
   const blockClasses = [
     'habit-block',
     habit.isSpecial ? 'special-block' : '',
     isBottom ? 'bottom-block' : '',
+    !habit.isSpecial ? getColorClass(habit.id) : '', // 특별 블록이 아닐 때만 색상 적용
     animationClass
   ].filter(Boolean).join(' ');
 

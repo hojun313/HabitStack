@@ -10,10 +10,10 @@ const initialStacks: HabitStackData[] = [
     name: '아침 루틴',
     repetitionType: 'daily',
     habits: [
+      { id: 0, name: '하루 시작하기', isSpecial: true },
       { id: 1, name: '물 한 컵 마시기', isSpecial: false },
       { id: 2, name: '스트레칭', isSpecial: false },
       { id: 3, name: '오늘 할 일 계획하기', isSpecial: false },
-      { id: 4, name: '하루 시작하기', isSpecial: true }, 
     ],
   },
   {
@@ -21,10 +21,10 @@ const initialStacks: HabitStackData[] = [
     name: '주간 집안일',
     repetitionType: 'weekly',
     habits: [
-      { id: 4, name: '화장실 청소', isSpecial: false },
-      { id: 5, name: '분리수거', isSpecial: false },
-      { id: 6, name: '식물 물 주기', isSpecial: false },
-      { id: 7, name: '새로운 주 시작하기', isSpecial: true },
+      { id: 0, name: '새로운 주 시작하기', isSpecial: true },
+      { id: 1, name: '화장실 청소', isSpecial: false },
+      { id: 2, name: '분리수거', isSpecial: false },
+      { id: 3, name: '식물 물 주기', isSpecial: false },
     ],
   },
 ];
@@ -33,15 +33,9 @@ const initialStacks: HabitStackData[] = [
 // App 컴포넌트
 function App() {
   const [stacks, setStacks] = useState<HabitStackData[]>(initialStacks);
-  // nextIdRef를 사용하여 고유 ID를 생성합니다.
-  // 초기 ID는 initialStacks의 최대 ID보다 크게 설정합니다.
+  // nextIdRef를 사용하여 스택의 고유 ID를 생성합니다.
   const nextIdRef = useRef(
-    Math.max(
-      ...initialStacks.flatMap(stack => [
-        stack.id,
-        ...stack.habits.map(habit => habit.id),
-      ]),
-    ) + 1
+    Math.max(...initialStacks.map(stack => stack.id)) + 1
   );
 
   // 가장 아래 할 일 완료 처리 (완료된 블록이 맨 위로 이동)
@@ -77,8 +71,13 @@ function App() {
     setStacks(prevStacks =>
       prevStacks.map(stack => {
         if (stack.id === stackId) {
+          // 해당 스택 내에서 가장 큰 ID를 찾아서 +1
+          const maxId = stack.habits.length > 0 
+            ? Math.max(...stack.habits.map(h => h.id)) 
+            : -1;
+          
           const newHabit: Habit = {
-            id: nextIdRef.current++, // 고유 ID 생성 및 증가
+            id: maxId + 1, // 스택 내에서 고유한 ID
             name: habitName,
             isSpecial: false, // 기본값은 false
           };
