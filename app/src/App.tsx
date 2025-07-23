@@ -11,7 +11,8 @@ const initialStacks: HabitStackData[] = [
     habits: [
       { id: 1, name: '물 한 컵 마시기', isSpecial: false },
       { id: 2, name: '스트레칭', isSpecial: false },
-      { id: 3, name: '오늘 할 일 계획하기', isSpecial: true }, // 'A' 블록
+      { id: 3, name: '오늘 할 일 계획하기', isSpecial: false },
+      { id: 4, name: '하루 시작하기', isSpecial: true }, 
     ],
   },
   {
@@ -21,6 +22,7 @@ const initialStacks: HabitStackData[] = [
       { id: 4, name: '화장실 청소', isSpecial: false },
       { id: 5, name: '분리수거', isSpecial: false },
       { id: 6, name: '식물 물 주기', isSpecial: false },
+      { id: 7, name: '새로운 주 시작하기', isSpecial: true },
     ],
   },
 ];
