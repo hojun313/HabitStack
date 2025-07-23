@@ -11,6 +11,9 @@ interface HabitStackProps {
 // HabitStack 컴포넌트
 const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
   const [newHabitName, setNewHabitName] = useState('');
+  const [completingHabitId, setCompletingHabitId] = useState<number | null>(null);
+  const [newlyAddedHabitId, setNewlyAddedHabitId] = useState<number | null>(null);
+  const [reappearingHabitId, setReappearingHabitId] = useState<number | null>(null);
   const bottomHabit = stack.habits[stack.habits.length - 1];
   const isAddingRef = useRef(false); // 추가 중인지 추적하는 ref
   const isCompletingRef = useRef(false); // 완료 처리 중인지 추적하는 ref
@@ -18,18 +21,48 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
   const handleAddHabit = () => {
     if (newHabitName.trim() && !isAddingRef.current) {
       isAddingRef.current = true;
+      
+      // 새로운 습관이 추가될 때의 ID를 예측 (임시)
+      const newHabitId = Date.now();
+      setNewlyAddedHabitId(newHabitId);
+      
       onAddHabit(stack.id, newHabitName);
       setNewHabitName('');
-      isAddingRef.current = false; // 즉시 플래그 재설정
+      
+      // 애니메이션 완료 후 상태 초기화
+      setTimeout(() => {
+        setNewlyAddedHabitId(null);
+        isAddingRef.current = false;
+      }, 1000);
     }
   };
 
   const handleCompleteClick = () => {
-    if (!isCompletingRef.current) {
-      isCompletingRef.current = true;
+    if (!bottomHabit || isCompletingRef.current) return;
+    
+    isCompletingRef.current = true;
+    const completingId = bottomHabit.id;
+    setCompletingHabitId(completingId);
+    
+    // 완료 애니메이션 완료 후 실제 상태 변경
+    setTimeout(() => {
+      // 상태 변경 직전에 완료 애니메이션 정리
+      setCompletingHabitId(null);
+      
+      // 실제 상태 변경
       onComplete(stack.id);
-      isCompletingRef.current = false; // 즉시 플래그 재설정
-    }
+      
+      // 상태 변경 후 약간의 지연을 두고 재등장 애니메이션 시작
+      setTimeout(() => {
+        setReappearingHabitId(completingId);
+        
+        // 재등장 애니메이션 완료 후 상태 초기화
+        setTimeout(() => {
+          setReappearingHabitId(null);
+          isCompletingRef.current = false;
+        }, 800);
+      }, 100); // 상태 변경 후 짧은 지연
+    }, 1200); // 완료 애니메이션 시간
   };
 
   // 스택 반복 주기 텍스트 생성
@@ -48,13 +81,24 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
         </div>
         <div className="card-body">
           <div className="habit-stack-visual mb-3">
-            {stack.habits.map((habit, index) => (
-              <HabitBlock
-                key={habit.id}
-                habit={habit}
-                isBottom={index === stack.habits.length - 1}
-              />
-            ))}
+            {stack.habits.length === 0 ? (
+              <div className="empty-stack">
+                <div className="empty-stack-message">
+                  🪵 블록을 추가해서 스택을 쌓아보세요!
+                </div>
+              </div>
+            ) : (
+              stack.habits.map((habit, index) => (
+                <HabitBlock
+                  key={habit.id}
+                  habit={habit}
+                  isBottom={index === stack.habits.length - 1}
+                  isCompleting={completingHabitId === habit.id}
+                  isNew={newlyAddedHabitId === habit.id}
+                  isReappearing={reappearingHabitId === habit.id}
+                />
+              ))
+            )}
           </div>
           <div className="input-group mb-3">
             <input
