@@ -9,6 +9,6 @@ export interface HabitStackData {
   id: number;
   name: string;
   habits: Habit[];
+  repetitionType: 'daily' | 'weekly' | 'custom'; // 반복 주기
+  customDays?: number; // 커스텀 주기일 경우 사용
 }
-
-

@@ -8,6 +8,7 @@ const initialStacks: HabitStackData[] = [
   {
     id: 1,
     name: '아침 루틴',
+    repetitionType: 'daily',
     habits: [
       { id: 1, name: '물 한 컵 마시기', isSpecial: false },
       { id: 2, name: '스트레칭', isSpecial: false },
@@ -18,6 +19,7 @@ const initialStacks: HabitStackData[] = [
   {
     id: 2,
     name: '주간 집안일',
+    repetitionType: 'weekly',
     habits: [
       { id: 4, name: '화장실 청소', isSpecial: false },
       { id: 5, name: '분리수거', isSpecial: false },
