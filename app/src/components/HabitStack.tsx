@@ -99,6 +99,7 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
                 <HabitBlock
                   key={habit.id}
                   habit={habit}
+                  stack={stack}
                   isBottom={index === 0}
                   isCompleting={completingHabitId === habit.id}
                   isNew={newlyAddedHabitId === habit.id}

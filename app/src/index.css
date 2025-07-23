@@ -348,38 +348,38 @@ button {
 
 /* ID 기반 무지개 색상 클래스 */
 .habit-block.color-0 {
-  background: linear-gradient(135deg, var(--rainbow-red) 0%, #ff6b6b 100%);
-  border-color: #ff4757;
+  background: linear-gradient(135deg, #ffcdd2 0%, #f8bbd9 100%);
+  border-color: #e57373;
 }
 
 .habit-block.color-1 {
-  background: linear-gradient(135deg, var(--rainbow-orange) 0%, #ffa500 100%);
-  border-color: #ff6b00;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%);
+  border-color: #ffb74d;
 }
 
 .habit-block.color-2 {
-  background: linear-gradient(135deg, var(--rainbow-yellow) 0%, #ffd93d 100%);
-  border-color: #ffc107;
+  background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
+  border-color: #fdd835;
 }
 
 .habit-block.color-3 {
-  background: linear-gradient(135deg, var(--rainbow-green) 0%, #6bcf7f 100%);
-  border-color: #4caf50;
+  background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%);
+  border-color: #8bc34a;
 }
 
 .habit-block.color-4 {
-  background: linear-gradient(135deg, var(--rainbow-blue) 0%, #74b9ff 100%);
-  border-color: #2196f3;
+  background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
+  border-color: #42a5f5;
 }
 
 .habit-block.color-5 {
-  background: linear-gradient(135deg, var(--rainbow-purple) 0%, #a29bfe 100%);
-  border-color: #673ab7;
+  background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 100%);
+  border-color: #ab47bc;
 }
 
 .habit-block.color-6 {
-  background: linear-gradient(135deg, var(--rainbow-pink) 0%, #fd79a8 100%);
-  border-color: #e91e63;
+  background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%);
+  border-color: #ec407a;
 }
 
 .habit-block:hover {
