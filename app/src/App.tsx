@@ -56,12 +56,12 @@ function App() {
   };
 
   // 새 스택 추가 처리
-  const handleAddStack = (stackName: string) => {
+  const handleAddStack = (stackName: string, repetitionType: 'daily' | 'weekly') => {
     const newStack: HabitStackData = {
       id: nextIdRef.current++, // 고유 ID 생성 및 증가
       name: stackName,
       habits: [], // 초기엔 비어있는 습관 목록
-      repetitionType: 'weekly', // 기본값을 weekly로 설정
+      repetitionType: repetitionType, // 사용자가 선택한 반복 타입 사용
     };
     setStacks(prevStacks => [...prevStacks, newStack]);
   };
