@@ -778,3 +778,31 @@ hr {
     flex: 0 0 calc(33.333% - 1rem);
   }
 }
+
+/* 비활성화된 특별 블록 스타일 */
+.habit-block.disabled-block {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+  cursor: not-allowed;
+  pointer-events: none;
+  position: relative;
+}
+
+.habit-block.disabled-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: inherit;
+}
+
+.disabled-text {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 0.2rem;
+  color: #666;
+}

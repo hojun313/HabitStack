@@ -75,8 +75,14 @@ function App() {
         if (stack.id === stackId) {
           if (stack.habits.length === 0) return stack; // 습관이 없으면 변경 없음
 
-          // 첫 번째(아래) 블록을 가져와서 맨 뒤(위)로 이동
-          const completedHabit = stack.habits[0];
+          // 첫 번째(아래) 블록을 가져와서 완료 시간 기록
+          const completedHabit = { ...stack.habits[0] };
+          
+          // 특별 블록인 경우 완료 시간 기록
+          if (completedHabit.isSpecial) {
+            completedHabit.lastCompletedAt = new Date().toISOString();
+          }
+          
           const updatedHabits = [...stack.habits.slice(1), completedHabit];
           return { ...stack, habits: updatedHabits };
         }

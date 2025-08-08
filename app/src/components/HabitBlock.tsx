@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Habit, HabitStackData } from '../types';
+import { canCompleteSpecialHabit } from '../utils/timeUtils';
 
 interface HabitBlockProps {
   habit: Habit;
@@ -88,11 +89,15 @@ const HabitBlock = ({
 
   // 동적 색상 적용
   const dynamicColor = getDynamicColor(habit, stack);
+  
+  // 특별 블록 활성화 상태 확인 (하단 블록이면서 특별 블록인 경우만)
+  const isDisabled = isBottom && !canCompleteSpecialHabit(habit, stack.repetitionType);
 
   const blockClasses = [
     'habit-block',
     habit.isSpecial ? 'special-block' : '',
     isBottom ? 'bottom-block' : '',
+    isDisabled ? 'disabled-block' : '', // 비활성화 클래스 추가
     // 동적 색상이 없을 때만 기존 색상 클래스 사용
     !habit.isSpecial && !dynamicColor ? getColorClass(habit.id) : '', 
     animationClass
@@ -107,6 +112,7 @@ const HabitBlock = ({
   return (
     <div className={blockClasses} style={blockStyle}>
       {habit.name}
+      {isDisabled && <small className="disabled-text">🔒 대기중</small>}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import type { HabitStackData } from '../types';
 import HabitBlock from './HabitBlock';
+import { canCompleteSpecialHabit, getNextAvailableTime } from '../utils/timeUtils';
 
 interface HabitStackProps {
   stack: HabitStackData;
@@ -42,6 +43,13 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
   const handleCompleteClick = () => {
     if (!bottomHabit || isCompletingRef.current) return;
     
+    // 특별 블록 시간 제한 검증
+    if (!canCompleteSpecialHabit(bottomHabit, stack.repetitionType)) {
+      const nextTime = getNextAvailableTime(bottomHabit, stack.repetitionType);
+      alert(`이 습관은 ${nextTime}에 다시 완료할 수 있습니다.`);
+      return;
+    }
+    
     isCompletingRef.current = true;
     const completingId = bottomHabit.id;
     setCompletingHabitId(completingId);
@@ -55,7 +63,7 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
       const remainingBlocks = stack.habits.slice(1).map(h => h.id);
       setDroppingBlocks(new Set(remainingBlocks));
       
-      // 실제 상태 변경 - 첫 번째 블록을 맨 뒤로 이동
+      // 실제 상태 변경 - 첫 번째 블록을 맨 뒤로 이동 (완료 시간 기록 포함)
       onComplete(stack.id);
       
       // 상태 변경 후 약간의 지연을 두고 재등장 애니메이션 시작

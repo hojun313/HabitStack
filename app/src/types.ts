@@ -3,6 +3,7 @@ export interface Habit {
   id: number;
   name: string;
   isSpecial: boolean; // 'A' 블록 여부
+  lastCompletedAt?: string; // 마지막 완료 시간 (특별 블록용)
 }
 
 export interface HabitStackData {
