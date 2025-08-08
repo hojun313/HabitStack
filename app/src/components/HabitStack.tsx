@@ -87,6 +87,11 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
       ? '매일 반복'
       : '매주 반복';
 
+  // 완료 버튼 비활성화 상태 확인
+  const isCompleteButtonDisabled = !bottomHabit || 
+    isCompletingRef.current || 
+    (bottomHabit && !canCompleteSpecialHabit(bottomHabit, stack.repetitionType));
+
   return (
     <div className="col-md-6 col-lg-4 mb-4">
       <div className="card">
@@ -143,7 +148,7 @@ const HabitStack = ({ stack, onComplete, onAddHabit }: HabitStackProps) => {
           <button
             className="complete-btn"
             onClick={handleCompleteClick}
-            disabled={!bottomHabit || isCompletingRef.current}
+            disabled={isCompleteButtonDisabled}
           >
             {bottomHabit ? `✨ "${bottomHabit.name}" 완료하기` : '📚 스택이 비었습니다'}
           </button>
