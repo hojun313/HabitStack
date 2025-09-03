@@ -1,5 +1,11 @@
 # HabitStack 🚀
 
+![HabitStack](HabitStack.png)
+
+## 🔗 서비스 바로가기
+
+[HabitStack 서비스](https://hojun313.github.io/HabitStack/)
+
 **습관을 블록처럼 쌓아 재미있게 관리하는 웹 애플리케이션**
 
 HabitStack은 매일 또는 매주 반복되는 습관들을 시각적인 블록으로 만들어, 게임처럼 즐겁게 습관을 관리하고 목표를 달성할 수 있도록 도와주는 서비스입니다.
